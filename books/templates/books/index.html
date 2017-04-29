@@ -1,0 +1,15 @@
+{% load static %}
+{% if book_list %}
+    <ul>
+    {% for book in book_list %}
+        <li><a href="/books/{{ book.isbn }}/">{{ book.book_title }}</a></li>
+        {% if book.image_url_s == bad_img_url or not book.image_url_s  %}
+            <img src="{% static bad_img %} " alt="{{book_title}} image">
+        {% else %}
+            <img src="{{book.image_url_s}}" alt="{{book_title}} image">
+        {% endif %}
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No books are available.</p>
+{% endif %}
