@@ -1,15 +1,38 @@
 {% load static %}
-{% if book_list %}
-    <ul>
-    {% for book in book_list %}
-        <li><a href="/books/{{ book.isbn }}/">{{ book.book_title }}</a></li>
-        {% if book.image_url_s == bad_img_url or not book.image_url_s  %}
-            <img src="{% static bad_img %} " alt="{{book_title}} image">
-        {% else %}
-            <img src="{{book.image_url_s}}" alt="{{book_title}} image">
-        {% endif %}
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No books are available.</p>
-{% endif %}
+<html>
+<head>
+<script
+  src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+  integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
+  crossorigin="anonymous"></script>
+<script src="{% static 'books/semantic.js' %}"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="{% static 'books/books.js' %}"></script>
+
+<link rel="stylesheet" type="text/css" href="{% static 'books/semantic.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'books/style.css' %}" />
+
+</head>
+
+<body>
+<header>
+    <div class="search">
+        <div class="ui action input">
+          <input id="book-search" name="book-search" type="text" data-isbn="0" placeholder="Search...">
+          <button id="btn-search" class="ui button">Search</button>
+        </div>
+    </div>
+</header>
+
+
+
+<div id="results">
+
+</div>
+
+
+
+</body>
+</html>

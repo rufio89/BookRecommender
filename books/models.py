@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.db import models
 
 class BxBookRatings(models.Model):
-    user_id = models.IntegerField(db_column='User-ID')  # Field name made lowercase. Field renamed to remove unsuitable characters.
+    user_id = models.IntegerField(db_column='User-ID', primary_key=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
     isbn = models.CharField(db_column='ISBN', max_length=13)  # Field name made lowercase.
     book_rating = models.IntegerField(db_column='Book-Rating')  # Field name made lowercase. Field renamed to remove unsuitable characters.
 
