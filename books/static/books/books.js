@@ -16,7 +16,6 @@ function getSearchResults(){
     $('#btn-search').on('click', function(){
         $("#results").html(loader);
         var isbn = $("#book-search").attr("data-isbn");
-        //alert(isbn);
         getBookDetail(isbn);
     });
 
@@ -24,7 +23,6 @@ function getSearchResults(){
         if(e.which == 13) {
             $("#results").html(loader);
             var isbn = $("#book-search").attr("data-isbn");
-            //alert(isbn);
             getBookDetail(isbn);
         }
     });
@@ -36,7 +34,6 @@ function getBookDetail(isbn){
         url: '/books/detail/' + isbn.toString(),
         type: "GET",
         success: function(response) {
-            console.log(response);
             $("#results").html();
             $("#results").html(response);
         }
@@ -59,5 +56,4 @@ function autoComplete() {
             minLength: 4,
         });
     });
-
 }

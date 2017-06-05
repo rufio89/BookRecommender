@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
+from django.views.decorators.cache import cache_page
 from django.shortcuts import render, get_object_or_404
 from .models import BxBooks, BxBookRatings
 import json as simplejson
@@ -8,8 +9,12 @@ import numpy as np
 import pandas as pd
 from numpy import linalg as la
 from django_pandas.io import read_frame
+import requests
+from PIL import Image
+from io import BytesIO
 
 
+#Different Similarity Functions for KNN
 def ecludSim(inA,inB):
     return 1.0 / (1.0 + la.norm(inA - inB))
 
@@ -22,22 +27,41 @@ def cosSim(inA,inB):
     denom = la.norm(inA)*la.norm(inB)
     return 0.5 + 0.5 * (num / denom)
 
+@cache_page(60*15)
+#Returns the index default page
 def index(request):
-    book_list = BxBooks.objects.order_by('book_title')[:50]
-    bad_img_url = 'http://images.amazon.com/images/P/0942320093.01.THUMBZZZ.jpg'
+    return render(request, 'books/index.html')
+
+
+#Gets the size of the image to see if there is an existing image
+def get_image_size(url):
+    data = requests.get(url).content
+    im = Image.open(BytesIO(data))
+    return im.size
+
+#Checks the image size to be larger than 1X1 otherwise display default image asset
+def check_image_size(url):
     bad_img = 'books/images/bad-image.jpg'
+    width, height = get_image_size(url)
+    if width==1 and height ==1:
+        url = bad_img
+    return url
 
-    context = {
-        'book_list': book_list,
-        'bad_img_url': bad_img_url,
-        'bad_img': bad_img,
-    }
-    return render(request, 'books/index.html', context)
+#Check image size for recommended list of images. Show default image asset if it doesn't exist
+def check_image_size_list(items):
+    bad_img = 'books/images/bad-image.jpg'
+    for item in items:
+        width, height = get_image_size(item.image_url_s)
+        if width == 1 and height == 1:
+            item.image_url_s = bad_img
+    return items
 
+@cache_page(60*15)
+#Return detail data after input is submitted
 def detail(request, isbn):
     book = get_object_or_404(BxBooks, pk=isbn)
-    bad_img_url = 'http://images.amazon.com/images/P/0786000015.01.LZZZZZZZ.jpg'
-    bad_img = 'books/images/bad-image.jpg'
+    bad_img_url = 'books/images/bad-image.jpg'
+    bad_img_url_l = 'books/images/bad-image-large.jpg'
     results = False
     if request.is_ajax():
         template = 'books/detail.html'
@@ -45,16 +69,17 @@ def detail(request, isbn):
     recommend_items = recommend(isbn)
     context = {
         'isbn': isbn,
-        'image_url_l': book.image_url_l,
-        'book_title': book.book_title,
         'bad_img_url': bad_img_url,
-        'bad_img': bad_img,
+        'bad_img_url_l': bad_img_url_l,
+        'image_url_l': check_image_size(book.image_url_l),
+        'book_title': book.book_title,
         'results': results,
-        'recommend_items': recommend_items
+        'recommend_items': check_image_size_list(recommend_items)
     }
 
     return render(request, template, context)
 
+#Sifts through sql tables to get data only where users have also rated the book you are searching for
 def recommend(isbn):
     model_results = BxBookRatings.objects.filter(isbn=isbn).order_by('book_rating').reverse()
     similar_users = []
@@ -68,7 +93,7 @@ def recommend(isbn):
 
     return final_results
 
-
+#Does KNN on the data matrix passed in from recommend
 def get_similar_books(dataMat, isbns, isbn, k, metric=ecludSim):
     isbn_index = np.where(isbns == isbn)[0][0]
     distances = []
@@ -89,7 +114,7 @@ def get_similar_books(dataMat, isbns, isbn, k, metric=ecludSim):
     return targets
 
 
-
+#Does the lookup for the autocomplete ajax call
 def lookup(request):
     # Default return list
     results = []
@@ -103,6 +128,24 @@ def lookup(request):
     json = simplejson.dumps(results)
     return HttpResponse(json)
 
+
+
+@cache_page(60*15)
+#Returns whatever page for the isbn you pass in
 def results(request, isbn):
-    response = "You're looking at the results of book %s."
-    return HttpResponse(response % isbn)
+    book = get_object_or_404(BxBooks, pk=isbn)
+    bad_img_url = 'books/images/bad-image.jpg'
+    results = False
+    if request.is_ajax():
+        template = 'books/detail.html'
+        results = True
+    recommend_items = recommend(isbn)
+    context = {
+        'isbn': isbn,
+        'bad_img_url': bad_img_url,
+        'image_url_l': check_image_size(book.image_url_l),
+        'book_title': book.book_title,
+        'results': results,
+        'recommend_items': check_image_size_list(recommend_items)
+    }
+    return render(request, 'books/results.html', context)

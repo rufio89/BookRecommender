@@ -1,0 +1,37 @@
+{% load static %}
+<html>
+<head>
+<script
+  src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+  integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
+  crossorigin="anonymous"></script>
+<script src="{% static 'books/semantic.js' %}"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="{% static 'books/books.js' %}"></script>
+
+<link rel="stylesheet" type="text/css" href="{% static 'books/semantic.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'books/style.css' %}" />
+
+</head>
+
+<body>
+    <div id="results">
+        <div class="book-title">
+            <h1>{{book_title}}</h1>
+        </div>
+        <div class="book-cover">
+        {% if image_url_l == bad_img_url  %}
+        <img src="{{bad_img_url}}" alt="">
+        {% else %}
+
+            <img src="{{image_url_l}}" alt="{{book_title}} image">
+        {% endif %}
+        </div>
+        <div class="amazon-link">
+            Amazon Link: <a href="https://www.amazon.com/gp/search?keywords={{isbn}}&index=books&linkCode=qs&tag=assoc-id-20" target="_blank">{{book_title}}</a>
+        </div>
+    </div>
+</body>
+</html>
