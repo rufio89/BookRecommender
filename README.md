@@ -9,6 +9,8 @@ This was a simple approach to build a recommender system on an open source book 
 
 ## Getting Started
 - install django and virtual environment
+- Spin up free MySql instance in AWS RDS [here](https://aws.amazon.com/rds/mysql/)
+- Import Bx-Books & Bx-Book-Ratings using the following [sql dump](http://www2.informatik.uni-freiburg.de/~cziegler/BX/BX-SQL-Dump.zip). This may take an hour or two.
 
 - add the following code for your db settings:
 ```python
@@ -30,6 +32,8 @@ DATABASES ={
 - pip install requests
 - pip install Pillow
 - pip install pymysql
+
+- run python manage.py runserver and the app should be up and running.
 
 ### Dependencies
 
