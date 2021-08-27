@@ -5,7 +5,7 @@ This is a simple book recommender system using the open source Book Crossing dat
 
 ## Description
 
-This was a simple approach to build a recommender system on an open source book dataset. When you type in a specific book name it will give you a list of 5 other books using KNN on a set of books using the book rating.
+This was a simple approach to build a recommender system on an open source book dataset. When you type in a specific book name it will give you a list of 6 other books using KNN on a set of books using the book rating.
 
 ## Getting Started
 - install django and virtual environment
