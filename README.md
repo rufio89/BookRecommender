@@ -1,5 +1,5 @@
 # Book Recommender
-![Book Recommender Image](https://ernewsoevi.s3.us-west-2.amazonaws.com/Screen+Shot+2021-08-27+at+1.43.34+PM.png)
+![Book Recommender Image](https://ernewsoevi.s3.us-west-2.amazonaws.com/Screen+Shot+2021-08-27+at+1.58.13+PM.png)
 
 This is a simple book recommender system using the open source Book Crossing database using Django written in Python with a MySQL Backend.
 
